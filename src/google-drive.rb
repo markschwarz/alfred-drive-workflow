@@ -10,6 +10,7 @@ require 'fileutils'
 require 'logger'
 require 'tempfile'
 require 'open-uri'
+require 'rbconfig'
 
 CLIENT_ID       = '978117856621-tvpnqtr02b8u0bgnh75sqb1loq1f5527.apps.googleusercontent.com'
 CLIENT_SECRET   = 'rty2NIATZfWFWSDX-XPs2usX'
@@ -38,6 +39,12 @@ $log = Logger.new(STDERR.tty? || ENV['alfred_debug'] ? STDERR : "#{CACHE_DIR}/go
 $log.formatter = proc do |severity, datetime, progname, msg|
   "[#{datetime.strftime('%Y-%m-%d %H:%M:%S.%3N')}] [#{Process.pid}] %7s #{msg}\n" % "[#{severity}]"
 end
+
+RUBY_INTERPRETER_PATH = File.join(RbConfig::CONFIG["bindir"],
+                                  RbConfig::CONFIG["RUBY_INSTALL_NAME"] +
+                                  RbConfig::CONFIG["EXEEXT"])
+$log.debug("Ruby path: #{ RUBY_INTERPRETER_PATH }")
+$log.debug("Ruby version: #{ RUBY_VERSION }p#{ RUBY_PATCHLEVEL }")
 
 def duration_in_words(from, to = Time.now)
   duration = (to - from).round.to_f
